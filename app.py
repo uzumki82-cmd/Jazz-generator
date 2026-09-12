@@ -6,8 +6,20 @@ import io
 
 st.set_page_config(page_title="Smooth Jazz Generator", page_icon="🎷", layout="wide")
 
+# Menyembunyikan tampilan bawaan Streamlit (Header, Footer, & Menu)
 st.markdown("""
 <style>
+    /* Sembunyikan Header atas & Top Bar Streamlit */
+    header {visibility: hidden;}
+    #MainMenu {visibility: hidden;}
+    
+    /* Sembunyikan Footer bawaan Streamlit */
+    footer {visibility: hidden;}
+    
+    /* Sembunyikan tombol Deploy/Manage jika ada */
+    .stAppDeployButton {display:none;}
+    
+    /* Desain Tampilan Aplikasi */
     .stApp { background-color: #12161f; color: #e0e0e0; }
     h1, h2, h3 { color: #d4af37; }
     .stButton>button { background-color: #d4af37; color: #12161f; font-weight: bold; border-radius: 8px; }
