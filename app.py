@@ -4,22 +4,18 @@ from google.genai import types
 from PIL import Image
 import io
 
-st.set_page_config(page_title="Smooth Jazz Generator", page_icon="🎷", layout="wide")
+st.set_page_config(page_title="Smooth Jazz Generator", page_icon="🎷", layout="wide", initial_sidebar_state="expanded")
 
-# Menyembunyikan tampilan bawaan Streamlit (Header, Footer, & Menu)
+# Perbaikan CSS: Menyembunyikan footer & branding tanpa menghilangkan tombol sidebar
 st.markdown("""
 <style>
-    /* Sembunyikan Header atas & Top Bar Streamlit */
-    header {visibility: hidden;}
-    #MainMenu {visibility: hidden;}
-    
-    /* Sembunyikan Footer bawaan Streamlit */
+    /* Sembunyikan footer bawaan */
     footer {visibility: hidden;}
     
-    /* Sembunyikan tombol Deploy/Manage jika ada */
+    /* Sembunyikan tombol Deploy di pojok bawah */
     .stAppDeployButton {display:none;}
     
-    /* Desain Tampilan Aplikasi */
+    /* Tampilan Aplikasi */
     .stApp { background-color: #12161f; color: #e0e0e0; }
     h1, h2, h3 { color: #d4af37; }
     .stButton>button { background-color: #d4af37; color: #12161f; font-weight: bold; border-radius: 8px; }
@@ -33,7 +29,7 @@ Setiap prompt WAJIB memasukkan elemen audio: Luxury Amplifier, Premium Active Sp
 Jika mood = Relax & Unwind, tambahkan teks pada thumbnail: "SMOOTH JAZZ" (besar) dan "Relax & Unwind" (kecil).
 """
 
-# SIDEBAR (Tempat Mengisi API Key)
+# SIDEBAR (Pengaturan & API Key)
 with st.sidebar:
     st.title("⚙️ Pengaturan")
     api_key = st.text_input("Gemini API Key", type="password", help="Masukkan API Key Google Gemini Anda di sini.")
@@ -51,7 +47,7 @@ with st.sidebar:
     """)
     st.caption("Aplikasi Smooth Jazz YouTube Long-Form Prompt Generator.")
 
-# KONTEN UTAMA APLIKASI
+# HALAMAN UTAMA
 st.markdown("<h1 style='text-align: center;'>🎷 SMOOTH JAZZ GENERATOR</h1>", unsafe_allow_html=True)
 
 col1, col2 = st.columns([1, 1], gap="large")
