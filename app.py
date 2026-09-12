@@ -3,19 +3,15 @@ from google import genai
 from google.genai import types
 from PIL import Image
 import io
+import base64
 
 st.set_page_config(page_title="Smooth Jazz Generator", page_icon="🎷", layout="wide", initial_sidebar_state="expanded")
 
-# Perbaikan CSS: Menyembunyikan footer & branding tanpa menghilangkan tombol sidebar
+# Styling CSS
 st.markdown("""
 <style>
-    /* Sembunyikan footer bawaan */
     footer {visibility: hidden;}
-    
-    /* Sembunyikan tombol Deploy di pojok bawah */
     .stAppDeployButton {display:none;}
-    
-    /* Tampilan Aplikasi */
     .stApp { background-color: #12161f; color: #e0e0e0; }
     h1, h2, h3 { color: #d4af37; }
     .stButton>button { background-color: #d4af37; color: #12161f; font-weight: bold; border-radius: 8px; }
@@ -29,11 +25,10 @@ Setiap prompt WAJIB memasukkan elemen audio: Luxury Amplifier, Premium Active Sp
 Jika mood = Relax & Unwind, tambahkan teks pada thumbnail: "SMOOTH JAZZ" (besar) dan "Relax & Unwind" (kecil).
 """
 
-# SIDEBAR (Pengaturan & API Key)
+# SIDEBAR (Pengaturan API Key)
 with st.sidebar:
     st.title("⚙️ Pengaturan")
     api_key = st.text_input("Gemini API Key", type="password", help="Masukkan API Key Google Gemini Anda di sini.")
-    
     st.markdown("""
     ---
     **🔑 Belum punya API Key?**
@@ -47,17 +42,77 @@ with st.sidebar:
     """)
     st.caption("Aplikasi Smooth Jazz YouTube Long-Form Prompt Generator.")
 
-# HALAMAN UTAMA
-st.markdown("<h1 style='text-align: center;'>🎷 SMOOTH JAZZ GENERATOR</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'>🎷 SMOOTH JAZZ GENERATOR & VISUALIZER</h1>", unsafe_allow_html=True)
 
 col1, col2 = st.columns([1, 1], gap="large")
 
 with col1:
-    st.subheader("1. Referensi Visual")
+    st.subheader("1. Referensi Visual & Audio")
     uploaded_file = st.file_uploader("Unggah gambar latar belakang", type=["png", "jpg", "jpeg"])
     if uploaded_file:
         image = Image.open(uploaded_file)
         st.image(image, caption="Gambar Referensi", use_container_width=True)
+
+    uploaded_audio = st.file_uploader("Unggah Musik Jazz (.mp3 / .wav)", type=["mp3", "wav"])
+    
+    if uploaded_audio:
+        st.caption("🎵 Audio Spectrum Visualizer (Bergerak Mengikuti Lagu):")
+        audio_bytes = uploaded_audio.read()
+        b64_audio = base64.b64encode(audio_bytes).decode()
+        audio_type = uploaded_audio.type
+
+        # HTML5 & Web Audio API Visualizer Spectrum
+        visualizer_html = f"""
+        <div style="text-align:center; background:#0b0d13; padding:15px; border-radius:12px; border:1px solid #d4af37;">
+            <canvas id="canvas" width="400" height="100" style="width:100%; height:100px; border-bottom: 2px solid #d4af37;"></canvas>
+            <br/><br/>
+            <audio id="audio" controls style="width:100%;">
+                <source src="data:{audio_type};base64,{b64_audio}" type="{audio_type}">
+            </audio>
+        </div>
+
+        <script>
+            const audio = document.getElementById('audio');
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+
+            let audioCtx, analyser, source;
+
+            audio.onplay = () => {{
+                if (!audioCtx) {{
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    analyser = audioCtx.createAnalyser();
+                    source = audioCtx.createMediaElementSource(audio);
+                    source.connect(analyser);
+                    analyser.connect(audioCtx.destination);
+                    analyser.fftSize = 64;
+                    draw();
+                }}
+                audioCtx.resume();
+            }};
+
+            function draw() {{
+                requestAnimationFrame(draw);
+                const bufferLength = analyser.frequencyBinCount;
+                const dataArray = new Uint8Array(bufferLength);
+                analyser.getByteFrequencyData(dataArray);
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const barWidth = (canvas.width / bufferLength) * 1.5;
+                let barHeight;
+                let x = 0;
+
+                for(let i = 0; i < bufferLength; i++) {{
+                    barHeight = dataArray[i] / 2.5;
+                    ctx.fillStyle = '#d4af37';
+                    ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+                    x += barWidth + 2;
+                }}
+            }}
+        </script>
+        """
+        st.components.v1.html(visualizer_html, height=200)
 
     st.subheader("2. Waktu & Mood")
     time_option = st.select_slider("Waktu Hari:", options=["Pagi hari", "Siang hari", "Sore hari", "Golden Hour", "Malam hari"], value="Malam hari")
