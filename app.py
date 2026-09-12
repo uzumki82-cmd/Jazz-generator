@@ -24,6 +24,19 @@ Jika mood = Relax & Unwind, tambahkan teks pada thumbnail: "SMOOTH JAZZ" (besar)
 with st.sidebar:
     st.title("⚙️ Pengaturan")
     api_key = st.text_input("Gemini API Key", type="password")
+    
+    st.markdown("""
+    ---
+    **🔑 Belum punya API Key?**
+    1. Buka [Google AI Studio](https://aistudio.google.com/app/apikey).
+    2. Login pakai akun Google/Gmail.
+    3. Klik **Create API key**.
+    4. *Copy* kodenya dan *paste* di kolom atas.
+    
+    *Tenang, API Key ini 100% Gratis!*
+    ---
+    """)
+    st.caption("Aplikasi Smooth Jazz YouTube Long-Form Prompt Generator.")
 
 st.markdown("<h1 style='text-align: center;'>🎷 SMOOTH JAZZ GENERATOR</h1>", unsafe_allow_html=True)
 
