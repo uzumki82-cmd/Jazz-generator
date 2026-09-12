@@ -33,9 +33,10 @@ Setiap prompt WAJIB memasukkan elemen audio: Luxury Amplifier, Premium Active Sp
 Jika mood = Relax & Unwind, tambahkan teks pada thumbnail: "SMOOTH JAZZ" (besar) dan "Relax & Unwind" (kecil).
 """
 
+# SIDEBAR (Tempat Mengisi API Key)
 with st.sidebar:
     st.title("⚙️ Pengaturan")
-    api_key = st.text_input("Gemini API Key", type="password")
+    api_key = st.text_input("Gemini API Key", type="password", help="Masukkan API Key Google Gemini Anda di sini.")
     
     st.markdown("""
     ---
@@ -50,6 +51,7 @@ with st.sidebar:
     """)
     st.caption("Aplikasi Smooth Jazz YouTube Long-Form Prompt Generator.")
 
+# KONTEN UTAMA APLIKASI
 st.markdown("<h1 style='text-align: center;'>🎷 SMOOTH JAZZ GENERATOR</h1>", unsafe_allow_html=True)
 
 col1, col2 = st.columns([1, 1], gap="large")
